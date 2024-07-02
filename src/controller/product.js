@@ -20,6 +20,13 @@ exports.read =(req,res)=>{
   })
 }
 
+exports.readByCategory =(req,res)=>{
+  Product.find({}).exec(function (err, products) {
+    products= products.filter(product => product.category==req.params.category)
+    res.send(products)
+  })
+}
+
 exports.add = (req,res) => {
   console.log(req.body);
   const {name, category, brand, price, stock, description, pictures} = req.body
