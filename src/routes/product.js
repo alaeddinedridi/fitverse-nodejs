@@ -1,10 +1,11 @@
 const express = require('express');
-const { create,fetch,read, add, readByCategory } = require('../controller/product');
+const { create,fetch,read, add, readByCategory,deleteById } = require('../controller/product');
 const router = express.Router();
 const uploadMiddleware = require('../controller/uploadMiddleware');
 const fs = require('fs');
 
 router.get('/product/create',create);
+router.delete('/product/delete/:id',deleteById);
 router.get('/product/:id',fetch);
 router.get('/products/read',read)
 router.get('/products/readbycategory/:category',readByCategory)

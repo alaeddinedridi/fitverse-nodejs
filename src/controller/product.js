@@ -20,6 +20,19 @@ exports.read =(req,res)=>{
   })
 }
 
+exports.deleteById= (req,res)=>{
+  Product.findOneAndRemove({ _id: req.params.id }, (err, product) => {
+    if (err) {
+      res.json({ err });
+    }
+
+    if (product){
+      res.status(200).json({ message: "found and removed the product"})
+    }
+    
+  })
+}
+
 exports.readByCategory =(req,res)=>{
   Product.find({}).exec(function (err, products) {
     products= products.filter(product => product.category==req.params.category)
