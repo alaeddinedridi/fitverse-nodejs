@@ -84,18 +84,38 @@ const uploadMiddleware = (req, res, next) => {
       if (data) {
         console.log(data);
         console.log("Product created");
-        return res.status(200).json({
-            name:name,
-            slug:name,
-            category:category,
-            images:files,
-            price:price,
-            brand:brand,
-            countInStock:stock,
-            description:description,
+
+        const files = req.files;
+  
+    // Process and store the files as required
+    // For example, save the files to a specific directory using fs module
+        files.forEach((file) => {
+          const filePath = `uploads/${file.filename}`;
+          fs.rename(file.path, filePath, (err) => {
+            if (err) {
+              // Handle error appropriately and send an error response
+              return res.status(500).json({ error: 'Failed to store the file' });
+            }
+          });
         });
-      }
+      
+        // Send an appropriate response to the client
+        
+
+        return res.status(200).json({
+              name:name,
+              slug:name,
+              category:category,
+              images:files,
+              price:price,
+              brand:brand,
+              countInStock:stock,
+              description:description,
+        });
+        }
     });
+
+
 
     // Attach files to the request object
     //req.files = files;

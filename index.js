@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const app = express();
+const {createAdminAccount} = require("./src/controller/auth")
 
 dotenv.config();
 app.use(express.json());
@@ -31,6 +32,8 @@ mongoose.connect(
     console.log('cannot connect'+e)
 });
 
+// create admin account
+createAdminAccount()
 
 const authRoutes = require('./src/routes/auth');
 app.use(authRoutes);
@@ -42,6 +45,7 @@ const paypalRoutes = require('./src/routes/paypal');
 app.use(paypalRoutes);
 
 const orderRoutes = require('./src/routes/order');
+
 app.use(orderRoutes);
 
 // Middleware to make the uploads folder accessible from url : /uploads
