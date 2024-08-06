@@ -23,3 +23,9 @@ exports.create=(req,res)=>{
         }
       });
 }
+
+exports.read=(req,res)=>{
+  Order.find({}).exec(function (err, orders) {
+    res.send(orders)
+  })
+}

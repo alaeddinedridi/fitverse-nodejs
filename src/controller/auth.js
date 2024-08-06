@@ -6,9 +6,13 @@ const util = require('util');
 exports.createAdminAccount = (req, res) => {
   User.findOne({ email: "admin@fitverse.com" }).exec((error, admin) => {
     if (admin) {
-      return res.status(400).json({
-        message: "Admin already registered.",
-      });
+      console.log("Admin already registered")
+      return 0
+    }
+
+    if (error) {
+      console.log("error:"+error)
+      return 0
     }
 
     const {fullname, email, password, role} = {fullname:"Ahmed Dridi", email:"admin@fitverse.com", password:"admin1234", role:"admin"}
@@ -89,10 +93,13 @@ exports.register = (req, res) => {
     // find the account using the email address
     User.findOne({ email: req.body.email }).exec((error, user) => {
       if (error) {
+        console.log("inside first error")
         return res.status(400).json({ error });
       }
       if (user) {
+        console.log("found admin")
         // Check if the password entered by the user matches the one saved in database
+        console.log("this is the admin pass:"+ user.authenticate(req.body.password))
         if (user.authenticate(req.body.password)) {
           // Create a token available for 1 hour and login user
           const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
@@ -110,6 +117,7 @@ exports.register = (req, res) => {
           });
           console.log("logged in");
         } else {
+          console.log("second error")
           res.status(400).json({ message: "something went wrong" });
         }
       } else {
