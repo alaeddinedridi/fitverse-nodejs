@@ -38,6 +38,9 @@ createAdminAccount()
 const authRoutes = require('./src/routes/auth');
 app.use(authRoutes);
 
+const userRoutes = require('./src/routes/user');
+app.use(userRoutes);
+
 const productRoutes = require('./src/routes/product');
 app.use(productRoutes);
 

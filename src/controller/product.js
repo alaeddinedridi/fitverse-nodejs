@@ -14,6 +14,39 @@ exports.fetch=(req,res)=>{
   })
 }
 
+exports.update=(req,res)=>{
+      
+
+      Product.findOne({ _id: req.params.id }).exec((err, product) => {
+        if (product){
+          const {name, category, brand, price, stock, description} = req.body
+          console.log("this is product: "+product)
+          console.log("this is category: "+category)
+          product.updateOne({
+            name, category, brand, price, stock, description
+          },function (err, success) {
+            if (err) {
+              console.log(err);
+              return res.status(400).json({ error: "error" });
+            } else {
+              console.log({
+                name, category, brand, price, stock, description
+              });
+              console.log("edited");
+            }
+          res.json(product)
+        })
+        
+      }
+      if (err){
+        res.json({ err });
+      }
+    
+    })
+
+      
+}
+
 exports.read =(req,res)=>{
   Product.find({}).exec(function (err, products) {
     res.send(products)
@@ -40,11 +73,7 @@ exports.readByCategory =(req,res)=>{
   })
 }
 
-exports.add = (req,res) => {
-  console.log(req.body);
-  const {name, category, brand, price, stock, description, pictures} = req.body
-  
-}
+
 
 exports.create = (req, res) => {
   // Product.deleteMany().exec((err,succ)=>{
