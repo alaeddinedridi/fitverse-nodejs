@@ -49,7 +49,16 @@ exports.update=(req,res)=>{
 
 exports.read =(req,res)=>{
   Product.find({}).exec(function (err, products) {
-    res.send(products)
+    console.log("inside read products")
+    if (err) {
+      res.json({ err });
+    }
+
+    if (products){
+      console.log("those are products:"+products)
+      res.status(200).json(products)
+    }
+    
   })
 }
 
