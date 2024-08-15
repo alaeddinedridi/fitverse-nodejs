@@ -24,10 +24,10 @@ const orderSchema = new mongoose.Schema({
     shippingPrice: { type: Number, required: true },
     tax: { type: Number, required: true },
     total: { type: Number, required: true },
-    isPaid: { type: Boolean, required: true, default: false },
-    isDelivered: { type: Boolean, required: true, default: false },
-    paidAt: { type: Date },
-    deliveredAt: { type: Date },
+    // isPaid: { type: Boolean, required: true, default: false },
+    // isDelivered: { type: Boolean, required: true, default: false },
+    // paidAt: { type: Date },
+    // deliveredAt: { type: Date },
 
    
 },{timestamps:true});
