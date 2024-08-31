@@ -6,7 +6,7 @@ const fs = require('fs');
 const {isAuthorized} = require('../controller/auth');
 
 router.get('/product/create',create);
-router.delete('/product/delete/:id',deleteById);
+router.delete('/product/delete/:id',isAuthorized("admin"),deleteById);
 router.get('/product/:id',fetch);
 router.get('/products/read',read)
 router.get('/products/readbycategory/:category',readByCategory)
