@@ -1,5 +1,6 @@
 const Order = require("../models/order");
 
+// Save the order in the database
 exports.create=(req,res)=>{
     
     const _order = new Order({
