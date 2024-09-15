@@ -48,6 +48,7 @@ const uploadMiddleware = (req, res, next) => {
       }
     });
 
+    // Get files names
     const filesNames = files.map(file => file.filename)
     console.log("files:"+filesNames)
 
@@ -73,6 +74,7 @@ const uploadMiddleware = (req, res, next) => {
       return res.status(400).json({ errors });
     }
 
+    // Store product in database
     _product.save((error, data) => {
       if (error) {
         console.log(error);
@@ -87,8 +89,7 @@ const uploadMiddleware = (req, res, next) => {
 
         const files = req.files;
   
-    // Process and store the files as required
-    // For example, save the files to a specific directory using fs module
+        // Upload the files in a specific directory
         files.forEach((file) => {
           const filePath = `uploads/${file.filename}`;
           fs.rename(file.path, filePath, (err) => {
@@ -100,8 +101,6 @@ const uploadMiddleware = (req, res, next) => {
         });
       
         // Send an appropriate response to the client
-        
-
         return res.status(200).json({
               name:name,
               slug:name,

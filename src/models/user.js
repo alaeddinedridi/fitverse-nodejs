@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+// This is the structure of users collection (table) in database
 const userSchema = new mongoose.Schema({
     
     fullname : {
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema({
    
 },{timestamps:true});
 
-// Create a hash using the bcrypt module 
+// Create a hash (encrypted password) using the bcrypt module 
 userSchema.virtual('password')
 .set(function(password){
     this.hash_password=bcrypt.hashSync(password,10)

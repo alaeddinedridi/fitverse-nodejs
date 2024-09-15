@@ -2,8 +2,9 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const util = require('util');
 
-
+// Create admin account
 exports.createAdminAccount = (req, res) => {
+  // Check if admin account already exists
   User.findOne({ email: "admin@fitverse.com" }).exec((error, admin) => {
     if (admin) {
       console.log("Admin already registered")
@@ -15,6 +16,7 @@ exports.createAdminAccount = (req, res) => {
       return 0
     }
 
+    // if admin account does not exist then prepare admin account informations
     const {fullname, email, password, role} = {fullname:"Ahmed Dridi", email:"admin@fitverse.com", password:"admin1234", role:"admin"}
     const _admin = new User({
       fullname,
@@ -23,6 +25,7 @@ exports.createAdminAccount = (req, res) => {
       role
     });
 
+    // Store admin account in the database
     _admin.save((error, data) => {
       if (error) {
         console.log(error);
@@ -40,6 +43,7 @@ exports.createAdminAccount = (req, res) => {
 }
 
 
+// Create user account
 exports.register = (req, res) => {
     // Check if the email address is already in use
     User.findOne({ email: req.body.email }).exec((error, user) => {
@@ -58,6 +62,7 @@ exports.register = (req, res) => {
       expiresIn: "20m",
     });
   
+    // if user account does not exist then prepare new user account informations
     const _user = new User({
       fullname,
       email,
@@ -78,6 +83,7 @@ exports.register = (req, res) => {
       if (data) {
         console.log(data);
         console.log("account created");
+        // Return a success response with account informations to frontend
         return res.status(200).json({
             fullname,
             email,
@@ -89,6 +95,7 @@ exports.register = (req, res) => {
   };
 
 
+  // Login function for user and admin
   exports.login = (req, res) => {
     // find the account using the email address
     User.findOne({ email: req.body.email }).exec((error, user) => {
@@ -103,8 +110,9 @@ exports.register = (req, res) => {
         if (user.authenticate(req.body.password)) {
           // Create a token available for 1 hour and login user
           const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
-            expiresIn: "99999999999h",
+            expiresIn: "1h",
           });
+          // Return a success response with user/admin informations to frontend
           const { _id, fullname, email,role } = user;
           res.status(200).json({
             token,
@@ -129,26 +137,31 @@ exports.register = (req, res) => {
   exports.isAuthorized = (permission) => {
     return (req, res, next) => {
       console.log('inside require signin')
-      // Get token from the authorization header
+      // Get token from the authorization header in request sent from frontend
       const token = req.headers.authorization.split(" ")[1];
-      //const token = req.headers.authorization;
       console.log(token)
-      //const token = req.body.token;
-      // Verify that the user is logged in
-      //const user = jwt.verify(token, process.env.JWT_KEY)
+    
+      // Verify that the user is logged in using that token
       const user = jwt.verify(token, process.env.JWT_KEY);
       console.log ("the user: "+user)
+
+      // if there's no user logged in then return an error
       if (!user){
         return res.status(401).send('unauthorized request')
       }
+
+      // the request really comes from a logged in user
       req.user = user
       console.log("this is req.user: "+req.user)
       console.log(util.inspect(user, {depth: null}));
 
+      // get that user from database
       User.findOne({ _id: user._id }).exec((error, user) => {
         if (error) {
           return res.status(400).json({ error });
         }
+
+        // verify the role of that user account, and based on the role allow him to access or not to a ressource (page)
         if (user) {
           console.log("this is the role:"+user.role)
           const role = user.role

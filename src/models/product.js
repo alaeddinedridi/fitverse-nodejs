@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// This is the structure of "products" collection (table) in database
 const productSchema = new mongoose.Schema({
     
     name: { type: String, required: true },

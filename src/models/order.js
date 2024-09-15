@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+// This is the structure of "orders" collection (table) in database
 const orderSchema = new mongoose.Schema({
     
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -31,7 +32,6 @@ const orderSchema = new mongoose.Schema({
 
    
 },{timestamps:true});
-
 
 const orderModel = mongoose.model('Order', orderSchema);
 module.exports = orderModel;
