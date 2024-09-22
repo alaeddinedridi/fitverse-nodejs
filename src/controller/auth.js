@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { decode } = require("punycode");
 const util = require('util');
 
 // Create admin account
@@ -110,7 +111,7 @@ exports.register = (req, res) => {
         if (user.authenticate(req.body.password)) {
           // Create a token available for 1 hour and login user
           const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
-            expiresIn: "1h",
+            expiresIn: "1m",
           });
           // Return a success response with user/admin informations to frontend
           const { _id, fullname, email,role } = user;
@@ -133,27 +134,72 @@ exports.register = (req, res) => {
       }
     });
   };
+
+  exports.isTokenExpired = (req, res) => {
+      console.log('inside isTokenExpired')
+      // Get token from the authorization header in request sent from frontend
+      const token = req.headers.authorization.split(" ")[1];
+      //console.log(token)
+
+      const { TokenExpiredError } = jwt;
+
+      // Verify that the user is logged in using that token
+      const user = jwt.verify(token, process.env.JWT_KEY, (error,decoded)=>{
+        console.log("started verifying token")
+        //Check if token has expired
+        if (error){
+          console.log("there's error in token")
+          if (error instanceof TokenExpiredError) {
+            console.log("return verify token negative")
+            return res.status(401).json({expired:true})
+          }
+        
+        }
+        console.log("token is correct")
+        return decoded
+      });
+
+      console.log("return verify token positive")
+      return res.status(200).json({expired:false})
+  }
   
   exports.isAuthorized = (permission) => {
     return (req, res, next) => {
       console.log('inside require signin')
       // Get token from the authorization header in request sent from frontend
       const token = req.headers.authorization.split(" ")[1];
-      console.log(token)
-    
+      //console.log(token)
+
+      const { TokenExpiredError } = jwt;
+
+      console.log("isAuthorized - started verifying token")
       // Verify that the user is logged in using that token
-      const user = jwt.verify(token, process.env.JWT_KEY);
-      console.log ("the user: "+user)
+      const user = jwt.verify(token, process.env.JWT_KEY, (error,decoded)=>{
+        //Check if token has expired
+        if (error){
+          console.log("isAuthorized - there's error in token")
+          if (error instanceof TokenExpiredError) {
+            console.log("isAuthorized - return verify token negative")
+            return res.status(401).send("Unauthorized! Access Token was expired!");
+          }
+        
+        }
+        console.log("isAuthorized - token is correct")
+        return decoded
+      });
+      //console.log ("the user: "+user)
 
       // if there's no user logged in then return an error
       if (!user){
         return res.status(401).send('unauthorized request')
       }
 
+      
+
       // the request really comes from a logged in user
       req.user = user
-      console.log("this is req.user: "+req.user)
-      console.log(util.inspect(user, {depth: null}));
+      //console.log("this is req.user: "+req.user)
+      //console.log(util.inspect(user, {depth: null}));
 
       // get that user from database
       User.findOne({ _id: user._id }).exec((error, user) => {
