@@ -60,7 +60,7 @@ exports.register = (req, res) => {
   
     // create a new token that will be available for 20 minutes
     const token = jwt.sign({ email, password }, process.env.JWT_KEY, {
-      expiresIn: "20m",
+      expiresIn: "5h",
     });
   
     // if user account does not exist then prepare new user account informations
@@ -111,7 +111,7 @@ exports.register = (req, res) => {
         if (user.authenticate(req.body.password)) {
           // Create a token available for 1 hour and login user
           const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
-            expiresIn: "1m",
+            expiresIn: "5h",
           });
           // Return a success response with user/admin informations to frontend
           const { _id, fullname, email,role } = user;
