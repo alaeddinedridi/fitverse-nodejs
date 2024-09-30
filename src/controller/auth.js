@@ -126,11 +126,12 @@ exports.register = (req, res) => {
           });
           console.log("logged in");
         } else {
-          console.log("second error")
-          res.status(400).json({ message: "something went wrong" });
+          console.log("email or password is incorrect")
+          res.status(400).json({ message: "email or password is incorrect" });
         }
       } else {
-        console.log("account doesn't exist");
+        console.log("Account doesn't exist");
+        res.status(400).json({ message: "Account doesn't exist" });
       }
     });
   };
