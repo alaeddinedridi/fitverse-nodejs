@@ -7,6 +7,6 @@ router.post('/auth/login',login);
 
 // Route for user signup
 router.post('/auth/register',register);
-router.get('/auth/isauthorized', isTokenExpired);
+//router.get('/auth/isauthorized', isTokenExpired);
 
 module.exports = router;
